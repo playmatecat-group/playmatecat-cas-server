@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                    http://www.springframework.org/schema/context
+                    http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                    http://www.springframework.org/schema/mvc  
+                    http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
+
+    <!--开启注解处理器 -->
+    <context:annotation-config />
+
+    <!-- 开启spring MVC元注解扫描 -->
+    <context:component-scan base-package="com.playmatecat">
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController" />
+        <!-- <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" /> -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+    
+    <!-- 通过注解，把一个URL映射到Controller“类”上 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+        <!-- <property name="interceptors"> 多个拦截器,顺序执行 <ref bean="yourInterceptor" /> </property> -->
+    </bean>
+    <!-- 通过注解，把一个URL映射到Controller类的“方法”上 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+
+
+
+    <!-- 开启spring MVC映射,映射顺序为2 -->
+    <mvc:annotation-driven />
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="2">
+        <property name="prefix">
+            <!-- controller层请求转发forward的根目录 -->
+            <value>/WEB-INF/jsp/</value>
+        </property>
+        <property name="suffix">
+            <!-- 设置映射文件类型 -->
+            <value>.jsp</value>
+        </property>
+    </bean>
+    
+    
+    <!-- shiro元注解支持相关bean(参考官方文档),如果有spring的mvc.xml就放在mvc中，否则放在application.xml中 -->
+<!--     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor" />
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager" />
+    </bean> -->
+    
+
+    <!-- 通过以下这段配置，才可以读取静态的css和js等资源文件 -->
+    <mvc:default-servlet-handler />
+    <!-- 静态资源映射 -->
+    <mvc:resources mapping="/static/images/**" location="/WEB-INF/images/" />
+    <mvc:resources mapping="/static/css/**" location="/WEB-INF//css/" />
+    <mvc:resources mapping="/static/js/**" location="/WEB-INF/js/" />
+
+
+</beans>

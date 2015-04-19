@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor license agreements. See the NOTICE file distributed with this work 
+    for additional information regarding copyright ownership. The ASF licenses this file to You under the Apache License, Version 2.0 (the "License"); you 
+    may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless 
+    required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
+    OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License. -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+                    http://www.springframework.org/schema/beans/spring-beans-4.0.xsd ">
+
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager" />
+        <property name="loginUrl" value="/login" />
+<!--         <property name="successUrl" value="/welcome.do" /> -->
+<!--         <property name="unauthorizedUrl" value="/403.do" /> -->
+<!--         <property name="filters">
+             <map>
+                <entry key="authc" value-ref="formAuthenticationFilter" />
+            </map>
+        </property> -->
+        <property name="filterChainDefinitions">
+            <value>
+                 <!-- 登录身份验证无需验证-->
+                /static/**=anon
+                <!-- 登录身份验证无需验证-->
+                /login*=anon
+                <!-- # 权限配置示例 /security/account/view.do=authc,perms[SECURITY_ACCOUNT_VIEW] -->
+                <!-- 其他任何地址都要验证 -->
+                <!-- user时有remember me可以通过,但是authc时shiro表示不能完全信任(对有remember me的cookie对话,只认为他是user级认识级,而不是authc真实已认证级),
+                                                                        必须本次再登录一下,类似淘宝付费,随机记住用户,但是为了安全会要求用户再登录 -->
+                /**=user
+                <!-- /**=authc -->
+            </value>
+        </property>
+    </bean>
+
+
+    <!-- 安全管理器 -->
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="authenticator" ref="authenticator" />
+        <property name="sessionManager" ref="sessionManager" />
+        <property name="cacheManager" ref="cacheManager" />
+        <property name="realm" ref="simpleRealm" />
+        <!-- 多个realm写法 -->
+        <!-- <util:list id=”realms”> -->
+        <!-- <ref bean=”shiroDbRealm”> -->
+        <!-- </util:list> -->
+        <property name="rememberMeManager" ref="rememberMeManager"/>  
+    </bean>
+
+    <!-- 会话管理器 -->
+    <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
+        <!-- 全局session超时时间 -->
+        <property name="globalSessionTimeout" value="1800000" />
+        <property name="sessionDAO" ref="sessionDAO" />
+<!--        <property name="sessionValidationSchedulerEnabled" value="true" />
+        <property name="sessionValidationScheduler" ref="sessionValidationScheduler" /> -->
+        <property name="sessionIdCookieEnabled" value="true" />
+        <property name="sessionIdCookie" ref="sessionIdCookie" />
+    </bean>
+    <!-- rememberMe管理器 -->
+    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+        <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('s0KTA3mFLUprK4AvVhsdag==')}" />
+        <property name="cookie" ref="rememberMeCookie" />
+    </bean>
+
+
+    <!-- 会话Cookie模板 -->
+    <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="rememberMe" />
+        <property name="httpOnly" value="true" />
+        <!-- 30*12天,单位是秒 -->
+        <property name="maxAge" value="31104000" />
+        <!-- 设置domain和path来实现remember me cookie二级跨域 -->
+        <property name="domain" value="playmatecat.com" />
+        <property name="path" value="/" />
+    </bean>
+    <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
+        <constructor-arg value="sid" />
+        <property name="httpOnly" value="true" />
+        <!-- maxAge=-1表示浏览器关闭时失效此Cookie -->
+        <property name="maxAge" value="-1" />
+    </bean>
+
+    <!-- Authenticator才是真正的身份验证者，Shiro API中核心的身份认证入口点 -->
+    <!-- 默认为ModularRealmAuthenticator会调用AuthenticationStrategy进行多Realm身份验证(假设你配了多个realm的话) -->
+    <!-- Authenticator会把相应的token传入Realm，从Realm获取身份验证信息 -->
+    <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator" />
+
+    <!-- 会话DAO -->
+    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO">
+        <!-- <property name="activeSessionsCacheName" value="shiro-activeSessionCache" /> -->
+        <property name="sessionIdGenerator" ref="sessionIdGenerator" />
+    </bean>
+
+    <!-- 缓存管理器 使用Ehcache实现 -->
+    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" />
+
+    <!-- 会话验证调度器,定期清理孤立的session(也就是那些没通过验证信息的session) -->
+    <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
+        <!-- 1800000=半小时扫描一次 -->
+        <property name="sessionValidationInterval" value="1800000" />
+        <property name="sessionManager" ref="sessionManager" />
+    </bean>
+
+    <!-- 自己实现的realm, -->
+    <bean id="simpleRealm" class="com.playmatecat.cas.CASRealm" autowire="default">
+        <!-- <property name="userService" ref="userService"></property> -->
+    </bean>
+
+    <!-- Shiro生命周期处理器 -->
+    <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor" />
+
+    <!-- 验证拦截器 -->
+    <!-- 我在login controller里自己实现了 -->
+<!--     <bean id="formAuthenticationFilter" class="org.apache.shiro.web.filter.authc.FormAuthenticationFilter" >
+        <property name="usernameParam" value="username"/>
+        <property name="passwordParam" value="password"/>
+        <property name="rememberMeParam" value="rememberMe"/>
+    </bean> -->
+
+    <!-- 会话ID生成器 -->
+    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
+
+
+
+    <!-- 注入db需要的bean -->
+<!--     <bean id="userService" name="userService" class="com.playmatecat.service.UserService" autowire="default"> -->
+<!--         <property name="userDAO" ref="userDAO"></property> -->
+<!--     </bean> -->
+
+<!--     <bean id="userDAO" name="userDAO" class="com.elfleaf.esb.db.user.dao.UserDAO" autowire="default"> -->
+<!--         <property name="sqlSessionFactory" ref="sqlSessionFactory"></property> -->
+<!--     </bean> -->
+
+</beans>
