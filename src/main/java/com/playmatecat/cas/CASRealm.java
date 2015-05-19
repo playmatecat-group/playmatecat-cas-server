@@ -38,6 +38,8 @@ public class CASRealm extends AuthorizingRealm {
 		//由于remember me或者自己设置的cookies效果(临时,关闭会话则失效,建议15分钟,和remember me双重记忆比较好),可以直接得到用户的subject进行鉴权
 		//鉴权完毕后,将结果返回子系统,子系统写入缓存(定时刷新,或者通过共享缓存信息在更新的时候清空某个用户的缓存)
 		
+		//仔细思考了一下,或许可以把casRealm和childSysRealm都写入commons,这样统一调用,childSysRealm自己走cache和nio调用cas nio server
+		
 		if (username != null) {
 			// 查询用户授权信息
 //			Collection<String> pers = businessManager.queryPermissions(username);
