@@ -8,6 +8,14 @@
                     http://www.springframework.org/schema/mvc  
                     http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd">
 
+	<!-- mvc拦截器 -->
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<bean class="com.playmatecat.spring.interceptor.RequestParamFormatInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors> -->
+
     <!--开启注解处理器 -->
     <context:annotation-config />
 

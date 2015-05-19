@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
@@ -65,7 +66,7 @@ public class LoginController {
 	@RequestMapping(value = "/login-params",method = RequestMethod.POST)
 	public String loginParams(@Valid @ModelAttribute LoginVO loginVO, Model model,
 			HttpServletRequest request, HttpServletResponse response) {
-		String username = "abc";
+		String username = "abc" + RandomUtils.nextInt(0, 1000);
 		String password = "123";
 		logger.info("login-params...");
 		
@@ -106,6 +107,13 @@ public class LoginController {
 			//若不存在跳转地址,则跳到单点登录成功页
 			rtn = "index";
 		}
+		
+		//测试鉴权1
+		subject.isPermitted("test:test");
+		
+//		//测试鉴权2,依然执行
+//		subject.isPermitted("test:test");
+		
 		
 		System.out.println(subject.isRemembered());
 		
