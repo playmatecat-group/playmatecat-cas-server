@@ -10,7 +10,23 @@
 
 	<properties>
 		<shiro.version>1.2.3</shiro.version>
+		<spring.version>4.1.5.RELEASE</spring.version>
 	</properties>
+	
+	<profiles>
+		<profile>
+			<id>jdk8</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<jdk>1.8</jdk>
+			</activation>
+			<properties>
+				<maven.compiler.source>1.8</maven.compiler.source>
+				<maven.compiler.target>1.8</maven.compiler.target>
+				<maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
+			</properties>
+		</profile>
+	</profiles>
 
 	<!-- 把依赖的jar包拷到lib目录 -->
 	<build>
@@ -43,8 +59,8 @@
 				<version>3.2</version>
 				<configuration>
 					<compilerArguments>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>1.8</source>
+						<target>1.8</target>
 						<encoding>UTF-8</encoding>
 					</compilerArguments>
 				</configuration>
@@ -68,11 +84,6 @@
 	   <dependency>
             <groupId>com.playmatecat</groupId>
             <artifactId>playmatecat-commons</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>com.playmatecat</groupId>
-            <artifactId>playmatecat-domain-commons</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 	
@@ -116,23 +127,23 @@
 		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>4.1.5.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
-            <version>4.1.5.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
-            <version>4.1.5.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
         <!-- spring jdbc,mybatis会依赖它 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>4.1.5.RELEASE</version>
+            <version>${spring.version}</version>
         </dependency>
 
         <!-- mybatis -->

@@ -2,7 +2,7 @@ package com.playmatecat.mapper;
 
 import java.util.Map;
 
-import com.playmatecat.modules.login.dto.UserDTO;
+import com.playmatecat.domains.dto.UserDTO;
 
 public interface UserMapper {
 	/**
