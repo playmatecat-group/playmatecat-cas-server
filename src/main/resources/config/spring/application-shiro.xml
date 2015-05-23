@@ -56,14 +56,14 @@
     <bean id="sessionManager" class="org.apache.shiro.web.session.mgt.DefaultWebSessionManager">
         <!-- 全局session超时时间 -->
         <property name="globalSessionTimeout" value="1800000" />
-        <property name="sessionDAO" ref="sessionDAO" />
+        <property name="sessionDAO" ref="redisSessionDAO" />
 <!--        <property name="sessionValidationSchedulerEnabled" value="true" />
         <property name="sessionValidationScheduler" ref="sessionValidationScheduler" /> -->
         <property name="sessionIdCookieEnabled" value="true" />
         <property name="sessionIdCookie" ref="sessionIdCookie" />
     </bean>
     <!-- rememberMe管理器 -->
-    <bean id="rememberMeManager" class="org.apache.shiro.web.mgt.CookieRememberMeManager">
+    <bean id="rememberMeManager" class="com.playmatecat.cas.core.rememberMe.LightCookieRememberMeManager">
         <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('s0KTA3mFLUprK4AvVhsdag==')}" />
         <property name="cookie" ref="rememberMeCookie" />
     </bean>
@@ -79,6 +79,7 @@
         <property name="domain" value="playmatecat.com" />
         <property name="path" value="/" />
     </bean>
+    
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="sid" />
         <property name="httpOnly" value="true" />
@@ -91,14 +92,34 @@
     <!-- Authenticator会把相应的token传入Realm，从Realm获取身份验证信息 -->
     <bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator" />
 
-    <!-- 会话DAO -->
-    <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO">
-        <!-- <property name="activeSessionsCacheName" value="shiro-activeSessionCache" /> -->
-        <property name="sessionIdGenerator" ref="sessionIdGenerator" />
-    </bean>
+    <!-- 会话DAO @deprecated  使用redis-->
+<!--     <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.MemorySessionDAO"> -->
+<!--         <property name="activeSessionsCacheName" value="shiro-activeSessionCache" /> -->
+<!--         <property name="sessionIdGenerator" ref="sessionIdGenerator" /> -->
+<!--     </bean> -->
+     <!-- 会话ID生成器 -->
+<!--     <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" /> -->
 
-    <!-- 缓存管理器 使用Ehcache实现 -->
-    <bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" />
+
+    <!-- 缓存管理器 使用redis实现 -->
+	<bean id="cacheManager" class="org.crazycake.shiro.RedisCacheManager">
+		<property name="redisManager" ref="redisManager" />
+	</bean>
+	
+	<!-- shiro redisManager -->
+	<bean id="redisManager" class="org.crazycake.shiro.RedisManager">
+	    <property name="host" value="127.0.0.1"/>
+	    <property name="port" value="6379"/>
+	    <property name="expire" value="60"/>
+		<!--optional properties: -->
+		<!--<property name="timeout" value="10000"/> -->
+		<!--<property name="password" value="123456"/> -->
+	</bean>
+	
+	<!-- redisSessionDAO -->
+	<bean id="redisSessionDAO" class="org.crazycake.shiro.RedisSessionDAO">
+	    <property name="redisManager" ref="redisManager" />
+	</bean>
 
     <!-- 会话验证调度器,定期清理孤立的session(也就是那些没通过验证信息的session) -->
     <bean id="sessionValidationScheduler" class="org.apache.shiro.session.mgt.quartz.QuartzSessionValidationScheduler">
@@ -107,7 +128,7 @@
         <property name="sessionManager" ref="sessionManager" />
     </bean>
 
-    <!-- 自己实现的realm, -->
+    <!-- 自己实现的realm -->
     <bean id="simpleRealm" class="com.playmatecat.cas.CASRealm" autowire="default">
         <!-- <property name="userService" ref="userService"></property> -->
     </bean>
@@ -122,10 +143,6 @@
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
     </bean> -->
-
-    <!-- 会话ID生成器 -->
-    <bean id="sessionIdGenerator" class="org.apache.shiro.session.mgt.eis.JavaUuidSessionIdGenerator" />
-
 
 
     <!-- 注入db需要的bean -->

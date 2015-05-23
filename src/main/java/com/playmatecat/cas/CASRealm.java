@@ -95,6 +95,7 @@ public class CASRealm extends AuthorizingRealm {
 //			return new SimpleAuthenticationInfo(username,password, getName());
 //		}
 		
+		//建议存userId用于鉴权
 		if(!username.equals("")) {
 			return new SimpleAuthenticationInfo(username,password, getName());
 		}

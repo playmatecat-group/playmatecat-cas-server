@@ -5,6 +5,13 @@ String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
 <%@taglib uri="http://www.springframework.org/tags/form" prefix="form" %>  
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %> 
+<c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,10 +21,10 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <title>欢迎登录</title>
 
 <link rel="stylesheet" href="http://apps.bdimg.com/libs/bootstrap/3.3.0/css/bootstrap.min.css" type="text/css" />
-<link rel="stylesheet" href="/static/css/lib/font-awesome-3.2.1/css/font-awesome.min.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/static/css/lib/font-awesome-3.2.1/css/font-awesome.min.css" type="text/css" />
 
-<link rel="stylesheet" href="/static/css/commons/commons.css" type="text/css" />
-<link rel="stylesheet" href="/static/css/login-module/login.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/static/css/commons/commons.css" type="text/css" />
+<link rel="stylesheet" href="${ctx}/static/css/login-module/login.css" type="text/css" />
 
 
 
@@ -62,6 +69,8 @@ var login_module = {
 
 </script>
 
+
+
 </head>
 <body>
 	<div ng-app class="container-fluid">
@@ -79,7 +88,7 @@ var login_module = {
 			<div class="col-md-3">
 				<div class="row">
 
-					<form:form modelAttribute="loginVO" action="/login-params" class=".form-inline" method="post">
+					<form:form modelAttribute="loginVO" action="${ctx}/login-params" class=".form-inline" method="post">
 						<form:hidden path="service" />
 						<form:hidden path="url" />
 						<div class="col-md-1 col-lg-2">

@@ -67,7 +67,7 @@ public class LoginController {
 	public String loginParams(@Valid @ModelAttribute LoginVO loginVO, Model model,
 			HttpServletRequest request, HttpServletResponse response) {
 		String username = "abc" + RandomUtils.nextInt(0, 1000);
-		String password = "123";
+		String password = "123" + RandomUtils.nextInt(0, 1000);
 		logger.info("login-params...");
 		
 		Subject subject = SecurityUtils.getSubject();
