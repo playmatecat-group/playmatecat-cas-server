@@ -124,6 +124,7 @@ public class LoginController {
 	@RequestMapping("/test")
 	public String test( @ModelAttribute LoginVO loginVO, Model model) {
 		Subject subject = SecurityUtils.getSubject();
+		subject.getSession().setAttribute("test", "haha");
 		System.out.println(subject.isRemembered());
 		return "index";
 	}

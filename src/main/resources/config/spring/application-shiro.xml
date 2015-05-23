@@ -63,7 +63,7 @@
         <property name="sessionIdCookie" ref="sessionIdCookie" />
     </bean>
     <!-- rememberMe管理器 -->
-    <bean id="rememberMeManager" class="com.playmatecat.cas.core.rememberMe.LightCookieRememberMeManager">
+    <bean id="rememberMeManager" class="com.playmatecat.shiro.rememberMe.LightCookieRememberMeManager">
         <property name="cipherKey" value="#{T(org.apache.shiro.codec.Base64).decode('s0KTA3mFLUprK4AvVhsdag==')}" />
         <property name="cookie" ref="rememberMeCookie" />
     </bean>
@@ -73,13 +73,14 @@
     <bean id="rememberMeCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="rememberMe" />
         <property name="httpOnly" value="true" />
-        <!-- 30*12天,单位是秒 -->
+        <!-- 30*12天也就是一年,单位是秒 -->
         <property name="maxAge" value="31104000" />
         <!-- 设置domain和path来实现remember me cookie二级跨域 -->
         <property name="domain" value="playmatecat.com" />
         <property name="path" value="/" />
     </bean>
     
+    <!-- sid的cookies -->
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="sid" />
         <property name="httpOnly" value="true" />
