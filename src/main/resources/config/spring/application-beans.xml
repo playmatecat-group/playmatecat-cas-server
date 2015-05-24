@@ -5,6 +5,20 @@
 	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd   
     http://www.springframework.org/schema/context 
     http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    
+    
+    <!-- 此处再写一次上下文扫描是为了确保spring可以读到被以来注入的类,方便上下文工具getBean -->
+    <!--开启注解处理器 -->
+    <context:annotation-config />
+    <!-- 开启spring MVC元注解扫描 -->
+    <context:component-scan base-package="com.playmatecat">
+        <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.RestController" />
+        <!-- <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" /> -->
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+    
 
 
 </beans> 
