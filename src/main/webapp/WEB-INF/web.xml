@@ -17,8 +17,7 @@
 		<param-name>contextConfigLocation</param-name>
 		<!-- 相关配置文件文件路径，可逗号隔开 -->
 		<param-value>
-			classpath*:config/spring/application*.xml,
-			classpath*:config/spring/cas/application*.xml
+			classpath*:config/spring/application*.xml
 		</param-value>
 	</context-param>
 	<context-param>

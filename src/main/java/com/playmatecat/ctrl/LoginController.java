@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -17,7 +16,7 @@ import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.shiro.web.util.WebUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,24 +24,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.playmatecat.domains.vo.LoginVO;
-import com.playmatecat.service.UserService;
 import com.playmatecat.utils.encrypt.UtilsAES;
-import com.playmatecat.utils.spring.UtilsSpringContext;
 
 @Controller
 @RequestMapping("")
 public class LoginController {
 	
 	private final static Logger logger = Logger.getLogger(LoginController.class);
-	
-	@Autowired
-	private UserService userService;
-	
+
 	@RequestMapping("/login")
-	public String loginView( @ModelAttribute LoginVO loginVO, Model model) {
+	public String loginView( @ModelAttribute LoginVO loginVO, Model model,
+			HttpServletRequest request, HttpServletResponse response) {
 		logger.info("login...");
-		userService.test();
-		UtilsSpringContext.getBean("userService");
+
+		
 		/*
 		 * @step 根据原请求地址,计算出子项目登入地址.
 		 * eg:www.playmate.com/playmatecate-web/user?id=123
@@ -97,17 +92,19 @@ public class LoginController {
 		cookies.setPath("/");
 		response.addCookie(cookies);*/
 
+		/*这段已经废除了
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		
 		//生成ticket
 		String ticketSrc = username + "," + password + "," + sdf.format(new Date());
 		String ticket = UtilsAES.encrypt(ticketSrc);
+		*/
 		
-		//准备重定向
-		String redirectUrl = loginVO.getService() + "?ticket=" + ticket;
-		if(StringUtils.isNoneBlank(loginVO.getUrl())) {
-			redirectUrl += "&url=" + loginVO.getUrl();
-		}
+		//准备重定向到之前用户最后访问地址
+		String redirectUrl = loginVO.getUrl();
+//		if(StringUtils.isNoneBlank(loginVO.getUrl())) {
+//			redirectUrl += "&url=" + loginVO.getUrl();
+//		}
 		
 		String rtn = "redirect:" + redirectUrl;
 		
