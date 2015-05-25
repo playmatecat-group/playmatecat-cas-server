@@ -89,7 +89,6 @@ var login_module = {
 				<div class="row">
 
 					<form:form modelAttribute="loginVO" action="${ctx}/login-params" class=".form-inline" method="post">
-						<form:hidden path="service" />
 						<form:hidden path="url" />
 						<div class="col-md-1 col-lg-2">
 							<%--space--%>
