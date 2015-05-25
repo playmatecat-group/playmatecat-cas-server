@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.playmatecat.domains.dto.UserDTO;
+import com.playmatecat.domains.dto.UserDto;
 import com.playmatecat.mapper.UserMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)  
@@ -18,7 +18,7 @@ public class TestMapper {
 	
 	@Test
 	public void test() {
-		UserDTO userDTO = new UserDTO();
+		UserDto userDTO = new UserDto();
 //		userDTO.setEmail("ccc");
 //		userDTO.setPassword("ccc");
 //		userDTO.setLoginedAt(new java.util.Date());

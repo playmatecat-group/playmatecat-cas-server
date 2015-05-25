@@ -57,7 +57,7 @@ var login_module = {
 		* 处理用户名被focus时的模拟placeholder
 		*/
 		un_ph_click : function() {
-			$("input[name='userDTO.username']").focus();
+			$("input[name='principal']").focus();
 		},
 		/**
 		*处理密码被focus时的模拟placeholder
@@ -96,8 +96,8 @@ var login_module = {
 						<div class="col-md-10 col-lg-8" style="border:1px solid gray;border-radius:3px;">
 							<div class="row pd5">
 								<label class="icon-group" for="userDTO.password" accesskey="u"></label>
-							    <span ng-show="username == '' || username == null" id="un_ph" class="placeholder_txt">用 户 名</span>
-                                <form:input ng-model="username" path="userDTO.username" type="text" class="w175"/>
+							    <span ng-show="principal == '' || principal == null" id="un_ph" class="placeholder_txt">用 户 名</span>
+                                <form:input ng-model="principal" path="principal" type="text" class="w175"/>
 							</div>
 							<div class="row pd5">
 								<label class="icon-key" for="userDTO.password" accesskey="p"></label>

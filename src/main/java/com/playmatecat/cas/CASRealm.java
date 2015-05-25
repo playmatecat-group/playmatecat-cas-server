@@ -8,11 +8,13 @@ import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationInfo;
-import org.apache.shiro.authz.Permission;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
-import org.apache.shiro.authz.permission.DomainPermission;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+
+import com.playmatecat.domains.dto.UserDto;
+import com.playmatecat.service.UserService;
+import com.playmatecat.utils.spring.UtilsSpringContext;
 
 /**
  * 实现jdbc realm
@@ -23,15 +25,17 @@ public class CASRealm extends AuthorizingRealm {
 	
 	private final static Logger logger = Logger.getLogger(CASRealm.class);
 	
+	private static UserService userService;
+	
 	/**
 	 * 获得授权信息
 	 */
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(
 			PrincipalCollection principals) {
-		String username = (String) principals.fromRealm(getName()).iterator().next();
-		//等价
-		principals.getPrimaryPrincipal();
+//		String username = (String) principals.fromRealm(getName()).iterator().next();
+//		//等价
+//		principals.getPrimaryPrincipal();
 		
 		//这里实际getPrimaryPrincipal里存的应该是userId,然后到数据库里读取用户的角色、权限
 		//子系统应该判定的是权限,然后调用某个http接口询问CAS是否有这个权限,CAS在controller里调用subject.isPermitted(权限)--->调用本方法doGetAuthorizationInfo
@@ -40,17 +44,17 @@ public class CASRealm extends AuthorizingRealm {
 		
 		//仔细思考了一下,或许可以把casRealm和childSysRealm都写入commons,这样统一调用,childSysRealm自己走cache和nio调用cas nio server
 		
-		if (username != null) {
-			// 查询用户授权信息
-//			Collection<String> pers = businessManager.queryPermissions(username);
-//			if (pers != null && !pers.isEmpty()) {
-//				SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-//				for (String each : pers)
-//					info.addStringPermissions(each);
-//
-//				return info;
-//			}
-		}
+//		if (username != null) {
+//			// 查询用户授权信息
+////			Collection<String> pers = businessManager.queryPermissions(username);
+////			if (pers != null && !pers.isEmpty()) {
+////				SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+////				for (String each : pers)
+////					info.addStringPermissions(each);
+////
+////				return info;
+////			}
+//		}
 		
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.addStringPermission("?module:?permission");
@@ -67,48 +71,33 @@ public class CASRealm extends AuthorizingRealm {
 			AuthenticationToken token) throws AuthenticationException {
 		UsernamePasswordToken upToken = (UsernamePasswordToken) token;
 		// 通过表单接收的用户名
-		String username = upToken.getUsername();
+		String principal = upToken.getUsername();
 		String password = new String(upToken.getPassword());
 		
 		//验证用户名不可为空
-		if (username == null || StringUtils.isBlank(username)) {
-			try {
-				throw new AuthenticationException("username must not empty");
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-				return null;
-			}
+		if (principal == null || StringUtils.isBlank(principal)) {
+		    throw new AuthenticationException("登录名不能为空");
 		}
 		//验证密码不可为空
 		if (password == null || StringUtils.isBlank(password)) {
-			try {
-				throw new AuthenticationException("username must not empty");
-			} catch (Exception e) {
-				logger.error(e.getMessage());
-				return null;
-			}
+		    throw new AuthenticationException("密码不能为空");
 		}
 		
-		
-		//进行DB用户名密码验证
-//		if("abc".equals(username) && "123".equals(password)) {
-//			return new SimpleAuthenticationInfo(username,password, getName());
-//		}
-		
-		//建议存userId用于鉴权
-		if(!username.equals("")) {
-			return new SimpleAuthenticationInfo(username,password, getName());
+		if(userService == null) {
+		    userService = (UserService) UtilsSpringContext.getBean("userService");
 		}
 		
+		//进行DB验证查询
+		UserDto userDto = userService.getUserInfo(principal, password);
 		
-		//成功则返回令牌对象
-//		return new SimpleAuthenticationInfo(account.getLoginName(),
-//		account.getPassword(), getName());
+		if(userDto == null) {
+		    throw new AuthenticationException("用户名不存在或者密码不正确");
+		} else {
+		    //获得用户信息成功
+		    Long userId = userDto.getId();
+		    return new SimpleAuthenticationInfo(userId,password, getName());
+		}
 
-
-		return null;
 	}
-
-
 
 }

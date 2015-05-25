@@ -8,15 +8,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.web.mgt.CookieRememberMeManager;
 import org.apache.shiro.web.servlet.Cookie;
-import org.apache.shiro.web.subject.support.DefaultWebSubjectContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -77,23 +75,28 @@ public class LoginController {
 	@RequestMapping(value = "/login-params",method = RequestMethod.POST)
 	public String loginParams(@Valid @ModelAttribute LoginVO loginVO, Model model,
 			HttpServletRequest request, HttpServletResponse response) {
-		String username = "" + RandomUtils.nextInt(0, 1000);
-		String password = "" + RandomUtils.nextInt(0, 1000);
+		String principal = loginVO.getPrincipal();
+		String password = loginVO.getUserDTO().getPassword();
 		logger.debug("do post login-params...");
 		
 		//获得用户subject
 		Subject subject = SecurityUtils.getSubject();
 
 		//创建登陆信息token
-		UsernamePasswordToken token = new UsernamePasswordToken(username,password);
+		UsernamePasswordToken token = new UsernamePasswordToken(principal,password);
 		//跨域记住我
 		token.setRememberMe(true);
 		
 		try {
 		    //@see CASRealm#doGetAuthenticationInfo(AuthenticationToken)
 			subject.login(token);
+		} catch (AuthenticationException authEx) {
+		    String errorMsg = authEx.getMessage();
+		    // TODO 返回页面这个错误信息
+		    logger.error(errorMsg,authEx);
+		    return null;
 		} catch (Exception e) {
-			logger.error(MessageFormat.format("登陆失败.username={0},password={1}", username, password));
+			logger.error(MessageFormat.format("登陆失败.username={0},password={1}", principal, password));
 		}
 		
 		

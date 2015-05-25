@@ -11,32 +11,14 @@
         <result column="email" property="email"/>
     </resultMap>
     
-    添加一条user记录
-    <insert id="addUser" parameterType="Map">
-        INSERT INTO
-		commons.user
-		(
-		email,
-		password,
-		nick_name,
-		registered_at,
-		logined_at
-		)
-		VALUES
-		(
-		#{email,jdbcType=VARCHAR},
-		PASSWORD(#{password,jdbcType=VARCHAR}),
-		#{nickName,jdbcType=VARCHAR},
-		NOW(),
-		FROM_UNIXTIME(#{loginedAt})
-		
-		)
-    </insert>
+ -->
     
-    <select id="getUser" resultMap="resulat">
-        SELECT email,logined_at 
-        from commons.user
-        where id = 10002
-        
-    </select> -->
+    <select id="getUser" parameterType="java.util.Map" resultType="com.playmatecat.domains.dto.UserDto">
+		SELECT id,
+			username,
+			password
+		FROM commons.user
+		WHERE username = #{username,jdbcType=VARCHAR}
+		AND password = PASSWORD(#{password,jdbcType=VARCHAR})
+    </select>
 </mapper>
