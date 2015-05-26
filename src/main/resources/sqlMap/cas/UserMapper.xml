@@ -14,11 +14,16 @@
  -->
     
     <select id="getUser" parameterType="java.util.Map" resultType="com.playmatecat.domains.dto.UserDto">
-		SELECT id,
+		SELECT 
+			id,
 			username,
 			password
 		FROM commons.user
-		WHERE username = #{username,jdbcType=VARCHAR}
-		AND password = PASSWORD(#{password,jdbcType=VARCHAR})
+		WHERE 
+			username = #{username,jdbcType=VARCHAR}
+		AND 
+			password = PASSWORD(#{password,jdbcType=VARCHAR})
+		AND
+			is_deleted = 0
     </select>
 </mapper>
