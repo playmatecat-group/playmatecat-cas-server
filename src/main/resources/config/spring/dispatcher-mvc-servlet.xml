@@ -57,19 +57,20 @@
     
     <!-- spring对shiro鉴权未通过时异常捕捉,如果配置了spring MVC那么shiro鉴权未通过时抛出的是异常而不是http 403 -->
     <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+    	<!-- 注意此处的url地址实际是实际spring ModelAndView的mvc forward映射地址,不用单独再写controller去映射 -->
+		<!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常页面名作为值 -->
+		<property name="exceptionMappings">
+			<props>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">error/400</prop>
+				<prop key="org.apache.shiro.authz.UnauthenticatedException">error/400</prop>
+			</props>
+		</property>
 		<!-- 定义默认的异常处理页面 -->
 		<property name="defaultErrorView">
 			<value>/error/error</value>
 		</property>
 		<!-- 定义异常处理页面用来获取异常信息的变量名，如果不添加exceptionAttribute属性，则默认为exception -->
 		<property name="exceptionAttribute" value="exception"/>
-		<!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常页面名作为值 -->
-		<property name="exceptionMappings">
-			<props>
-				<prop key="org.apache.shiro.authz.UnauthorizedException">error/io.jsp</prop>
-				<prop key="org.apache.shiro.authz.UnauthenticatedException">error/sql.jsp</prop>
-			</props>
-		</property>
 	</bean>
     
 
