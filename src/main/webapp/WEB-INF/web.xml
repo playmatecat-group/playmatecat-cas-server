@@ -76,5 +76,41 @@
 		<!-- 拦截所有请求 -->
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+	
+<!-- 	
+	<login-config>
+
+             Authorization setting for SSL
+
+        <auth-method>CLIENT-CERT</auth-method>
+
+        <realm-name>Client Cert Users-only Area</realm-name>
+
+    </login-config>
+
+    <security-constraint>
+
+             Authorization setting for SSL
+
+        <web-resource-collection >
+
+            <web-resource-name >SSL</web-resource-name>
+
+            <url-pattern>/*</url-pattern>
+
+        </web-resource-collection>
+
+        <user-data-constraint>
+
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+
+        </user-data-constraint>
+
+</security-constraint>
+你会发现，即使使用 http://....:8080 来访问你的应用程序，它也会重定向为
+ https://....8443 访问，也就是说，你的应用已经强制使用SSL安全访问层 -->
+ 
+
+
 
 </web-app>
