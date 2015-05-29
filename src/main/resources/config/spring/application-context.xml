@@ -8,7 +8,7 @@
 
 
 <!-- @version $Id: applicationContext.xml 561608 2007-08-01 00:33:12Z vgritsenko $ -->
-<beans xmlns="http://www.springframework.org/schema/beans" 
+<beans profile="test" xmlns="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xmlns:context="http://www.springframework.org/schema/context"
     xmlns:p="http://www.springframework.org/schema/p"
@@ -30,8 +30,7 @@
         <!-- <property name="ignoreUnresolvablePlaceholders" value="true" />  -->
         <property name="locations">
             <list>
-                <value>classpath:config/spring/evn-setting.properties</value>
-                <value>classpath:config/mybatis/datasource-setting.properties</value>
+                <value>classpath:config/props/test/datasource-setting.properties</value>
             </list>
         </property>
     </bean>
