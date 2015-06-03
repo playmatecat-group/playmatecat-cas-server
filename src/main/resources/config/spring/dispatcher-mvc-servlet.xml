@@ -29,11 +29,11 @@
     </context:component-scan>
 
     <!-- 通过注解，把一个URL映射到Controller“类”上 -->
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
         <!-- <property name="interceptors"> 多个拦截器,顺序执行 <ref bean="yourInterceptor" /> </property> -->
     </bean>
     <!-- 通过注解，把一个URL映射到Controller类的“方法”上 -->
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" />
 
     <!-- 开启spring MVC映射,映射顺序为2 -->
     <mvc:annotation-driven />
