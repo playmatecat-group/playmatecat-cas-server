@@ -61,13 +61,23 @@
 		<!-- 定义需要特殊处理的异常，用类名或完全路径名作为key，异常页面名作为值 -->
 		<property name="exceptionMappings">
 			<props>
-				<prop key="org.apache.shiro.authz.UnauthorizedException">error/400</prop>
-				<prop key="org.apache.shiro.authz.UnauthenticatedException">error/400</prop>
+				<prop key="org.apache.shiro.authz.UnauthorizedException">common/error/403</prop>
+				<prop key="org.apache.shiro.authz.UnauthenticatedException">common/error/403</prop>
+				<prop key="com.playmatecat.spring.exception.NotFoundURIException">common/error/404</prop>
 			</props>
 		</property>
+		<!-- 定义异常statusCode -->
+		<property name="statusCodes">
+			<props>
+				<prop key="common/error/403">403</prop>
+				<prop key="common/error/404">404</prop>
+				<prop key="common/error/500">500</prop>
+			</props>
+		</property>
+		
 		<!-- 定义默认的异常处理页面 -->
 		<property name="defaultErrorView">
-			<value>/error/error</value>
+			<value>common/error/500</value>
 		</property>
 		<!-- 定义异常处理页面用来获取异常信息的变量名，如果不添加exceptionAttribute属性，则默认为exception -->
 		<property name="exceptionAttribute" value="exception"/>
