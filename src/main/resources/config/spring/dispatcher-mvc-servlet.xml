@@ -63,6 +63,7 @@
 			<props>
 				<prop key="org.apache.shiro.authz.UnauthorizedException">common/error/403</prop>
 				<prop key="org.apache.shiro.authz.UnauthenticatedException">common/error/403</prop>
+				<prop key="com.playmatecat.spring.exception.NotFoundPermException">common/error/403</prop>
 				<prop key="com.playmatecat.spring.exception.NotFoundURIException">common/error/404</prop>
 			</props>
 		</property>
