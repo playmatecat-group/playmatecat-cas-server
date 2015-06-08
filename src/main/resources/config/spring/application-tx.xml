@@ -42,9 +42,9 @@
     </tx:advice>
 
     <aop:config>
-        <aop:pointcut id="oaServiceMethods"
+        <aop:pointcut id="pcServiceMethods"
             expression="execution(* com.playmatecat..*..cpt..*.*(..))" />
-        <aop:advisor advice-ref="txAdvice" pointcut-ref="oaServiceMethods" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="pcServiceMethods" />
     </aop:config>
     
 </beans>
