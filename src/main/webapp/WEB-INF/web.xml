@@ -39,7 +39,11 @@
         <param-value>60000</param-value>
     </context-param>
     
-    
+    <!-- 解决自己(不是spring自管理的)启动的线程的内省get&set内存泄露问题,一定要配置在第一个listener,解决包括quartz插件泄露内存问题 -->
+    <listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+	
     <!-- log4j2 listener-begin -->
     <listener>
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener
