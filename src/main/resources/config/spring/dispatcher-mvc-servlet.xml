@@ -93,4 +93,22 @@
     <mvc:resources mapping="/static/js/**" location="/WEB-INF/js/" />
 
 
+	<!-- 整合fastjson转换 -->
+	<bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json</value>
+                <!-- <value>text/html;charset=UTF-8</value> -->
+            </list>
+		</property>
+		<property name="serializerFeature">
+			<array>
+				<value>WriteMapNullValue</value>
+				<value>QuoteFieldNames</value>
+<!-- 				<value>WriteNullNumberAsZero</value> -->
+<!-- 				<value>WriteNullStringAsEmpty</value> -->
+			</array>
+		</property>
+	</bean>
+
 </beans>
