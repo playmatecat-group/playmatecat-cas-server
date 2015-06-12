@@ -95,6 +95,28 @@
 		<filter-name>shiroFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- 让form表单支持restful的put和delete方法
+	在form提交参数中增加<input type="hidden" name="_method" value="put" /> 即可实现,注意form的method依然是post-->
+	<filter>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter
+		</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>HiddenHttpMethodFilter</filter-name>
+		<servlet-name>springMVC-dispatcher</servlet-name>
+	</filter-mapping>
+	
+	<!-- 让spring可以接受form的put delete中的参数,若无次过滤器,则put delete表单内的参数无效 -->
+	<filter>
+        <filter-name>HttpMethodFilter</filter-name>
+        <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>HttpMethodFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 	<!-- spring MVC实现，采用servlet进行派发请求 -->
 	<servlet>
