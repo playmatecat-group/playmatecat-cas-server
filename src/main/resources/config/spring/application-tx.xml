@@ -42,8 +42,10 @@
     </tx:advice>
 
     <aop:config>
+	    <!-- <aop:pointcut id="pcServiceMethods"
+	            expression="execution(* com.playmatecat..*..cpt..*.*(..))" /> -->
         <aop:pointcut id="pcServiceMethods"
-            expression="execution(* com.playmatecat..*..cpt..*.*(..))" />
+            expression="execution(* com.playmatecat.cpt..*.*(..))" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="pcServiceMethods" />
     </aop:config>
     
