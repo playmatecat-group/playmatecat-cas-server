@@ -49,6 +49,12 @@
         <listener-class>org.apache.logging.log4j.web.Log4jServletContextListener
         </listener-class>
     </listener>
+    
+        
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener
+        </listener-class>
+    </listener>
 
     <!-- log4j2 filter-begin -->
     <filter>
@@ -66,24 +72,23 @@
         <dispatcher>ASYNC</dispatcher>
     </filter-mapping>
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener
-		</listener-class>
-	</listener>
-
-	<filter>
-		<filter-name>encodingFilter</filter-name>
-		<filter-class>org.springframework.web.filter.CharacterEncodingFilter
-		</filter-class>
-		<init-param>
-			<param-name>encoding</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
-		<init-param>
-			<param-name>forceEncoding</param-name>
-			<param-value>true</param-value>
-		</init-param>
-	</filter>
+	<!-- 配置字符编码过滤器，编码格式设为UTF-8，避免中文乱码 -->
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
 	<filter>
 		<filter-name>shiroFilter</filter-name>
@@ -117,6 +122,7 @@
         <filter-name>HttpMethodFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
+
 
 	<!-- spring MVC实现，采用servlet进行派发请求 -->
 	<servlet>
